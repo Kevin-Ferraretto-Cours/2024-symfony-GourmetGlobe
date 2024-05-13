@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ingredient{% endblock %}
+
+{% block body %}
+    {% include 'navbar.html.twig' %}
+
+    <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
+        <h1 class="font-semibold text-2xl md:text-3xl text-gray-900 dark:text-white leading-tight">Détail d'ingrédient</h1>
+        <div class="flex items-center space-x-4">
+            <div>
+                <a href="{{ path('app_ingredient_index') }}" class="hidden md:inline-flex text-white items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                    <svg class="w-8 h-8 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12l4-4m-4 4 4 4"></path>
+                    </svg>
+                    Retour à la liste
+                </a>
+                <a href="{{ path('app_ingredient_index') }}" class="md:hidden inline-flex text-white items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12l4-4m-4 4 4 4"></path>
+                    </svg>
+                </a>
+            </div>
+
+            {% if ingredient.user == app.user %}
+            <div>
+                <a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}" class="hidden md:inline-flex text-white items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg class="w-8 h-8 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 22 22">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"></path>
+                    </svg>
+                    Modifier
+                </a>
+                <a href="{{ path('app_ingredient_edit', {'id': ingredient.id}) }}" class="md:hidden text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 22 22">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"></path>
+                    </svg>
+                </a>
+            </div>
+            {% endif %}
+
+            {% if ingredient.recipes.count == 0 and ingredient.user == app.user %}
+            <div>
+                <form class="hidden md:block" method="post" action="{{ path('app_ingredient_delete', {'id': ingredient.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ingredient.id) }}">
+                    <button class="text-white inline-flex items-center bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                        <svg class="w-8 h-8 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"></path>
+                        </svg>
+                        Supprimer
+                    </button>
+                </form>
+                <form class="md:hidden" method="post" action="{{ path('app_ingredient_delete', {'id': ingredient.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ ingredient.id) }}">
+                    <button class="text-white inline-flex items-center bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"></path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <section class="bg-white dark:bg-gray-900 flex">
+        <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+            <h2 class="mb-2 text-xl font-semibold leading-none text-gray-900 md:text-2xl dark:text-white">{{ ingredient.name }}</h2>
+        </div>
+        <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+            <h2 class="mb-2 text-xl font-semibold leading-none text-gray-900 md:text-2xl dark:text-white">Recette associés:</h2>
+            <ul>
+                {% for recipe in ingredient.recipes %}
+                    <li>
+                        {{ recipe.name }}
+                    </li>
+                {% else %}
+                    Aucune recette associé
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+{% endblock %}
