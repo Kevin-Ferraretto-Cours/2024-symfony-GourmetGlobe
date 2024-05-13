@@ -7,9 +7,11 @@ use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[Route('/recipe')]
 class RecipeController extends AbstractController
@@ -30,6 +32,23 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $image = $form->get('picture')->getData();
+            if ($image) {
+                $slugger = new AsciiSlugger();
+                $slug = $slugger->slug($form->get('name')->getData());
+                $newFilename = date('d-m-Y--h-i-s') . '.' . $slug . '.' . $image->guessExtension();
+                $image->move(
+                    $this->getParameter('recipe_directory_assets'),
+                    $newFilename
+                );
+                $filesystem = new Filesystem();
+                $filesystem->copy(
+                    $this->getParameter('recipe_directory_assets') . '/' . $newFilename,
+                    $this->getParameter('recipe_directory_public') . '/' . $newFilename
+                );
+                $recipe->setPicture('build/img/recipe/' . $newFilename);
+            }
+            $recipe->setUser($this->getUser());
             $entityManager->persist($recipe);
             $entityManager->flush();
 

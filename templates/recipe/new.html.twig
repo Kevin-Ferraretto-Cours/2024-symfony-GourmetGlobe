@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GourmetGlobe - Ajout de recette{% endblock %}
+
+{% block body %}
+    {% include 'navbar.html.twig' %}
+
+    <div class="max-w-screen-xl flex items-center justify-between mx-auto p-4">
+        <h1 class="font-semibold text-3xl text-gray-900 dark:text-white leading-tight">Ajout de recette</h1>
+        <div class="flex items-center space-x-4">
+            <div>
+                <a href="{{ path('app_recipe_index') }}" class="hidden md:inline-flex text-white items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                    <svg class="w-8 h-8 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12l4-4m-4 4 4 4"></path>
+                    </svg>
+                    Retour à la liste
+                </a>
+                <a href="{{ path('app_recipe_index') }}" class="md:hidden inline-flex text-white items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12l4-4m-4 4 4 4"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <section class="bg-white dark:bg-gray-900">
+        <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+            <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
+                <div class="sm:col-span-2">
+                    {{ form_row(form.name) }}
+                </div>
+                <div class="sm:col-span-2">
+                    {{ form_row(form.description) }}
+                </div>
+                <div class="sm:col-span-2">
+                    {{ form_row(form.duration) }}
+                </div>
+                <div class="sm:col-span-2">
+                    {{ form_row(form.people) }}
+                </div>
+                <div class="sm:col-span-2">
+                    {{ form_row(form.picture) }}
+                </div>
+                <div class="sm:col-span-2">
+                    {{ form_row(form.ingredient) }}
+                </div>
+            </div>
+            <div class="flex justify-between">
+                <button type="submit" class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 hover:bg-blue-800">
+                    Ajouter de la recette
+                </button>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </section>
+{% endblock %}
