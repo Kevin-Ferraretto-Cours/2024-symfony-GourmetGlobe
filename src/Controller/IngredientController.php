@@ -54,6 +54,9 @@ class IngredientController extends AbstractController
     #[Route('/{id}/edit', name: 'app_ingredient_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager): Response
     {
+        if ($ingredient->getUser() !== $this->getUser()) {
+            return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+        }
         $form = $this->createForm(IngredientType::class, $ingredient);
         $form->handleRequest($request);
 
@@ -72,6 +75,9 @@ class IngredientController extends AbstractController
     #[Route('/{id}', name: 'app_ingredient_delete', methods: ['POST'])]
     public function delete(Request $request, Ingredient $ingredient, EntityManagerInterface $entityManager): Response
     {
+        if ($ingredient->getUser() !== $this->getUser() || $ingredient->getRecipes()->count() > 0) {
+            return $this->redirectToRoute('app_ingredient_index', [], Response::HTTP_SEE_OTHER);
+        }
         if ($this->isCsrfTokenValid('delete'.$ingredient->getId(), $request->getPayload()->get('_token'))) {
             $entityManager->remove($ingredient);
             $entityManager->flush();
