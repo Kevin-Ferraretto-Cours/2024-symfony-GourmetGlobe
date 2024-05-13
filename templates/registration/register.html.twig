@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+
+    <section class="bg-gray-50 dark:bg-gray-900">
+        <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+            <a href="#" class="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
+                <img class="w-8 h-8 mr-2" src="{{ asset('img/logo/logo.png') }}" alt="logo">
+                GourmetGlobe
+            </a>
+            <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+                    <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                        Créer un compte
+                    </h1>
+                    {{ form_errors(registrationForm) }}
+                    {{ form_start(registrationForm) }}
+                        <div>
+                            {{ form_row(registrationForm.email) }}
+                        </div>
+                        <div>
+                            {{ form_row(registrationForm.plainPassword, {
+                                label: 'Password'
+                            }) }}
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                {{ form_widget(registrationForm.agreeTerms) }}
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="registration_form_agreeTerms" class="font-light text-gray-500 dark:text-gray-300">J'accepte les conditions générales</label>
+                            </div>
+                        </div>
+                    <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Créer un compte</button>
+                    <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                            Vous avez déjà un compte ? <a href="{{ path('app_login') }}" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Se connecter</a>
+                        </p>
+                    {{ form_end(registrationForm) }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
