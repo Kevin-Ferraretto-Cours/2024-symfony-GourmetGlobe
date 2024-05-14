@@ -72,7 +72,7 @@
             <ul>
                 {% for recipe in ingredient.recipes %}
                     <li>
-                        {{ recipe.name }}
+                        <a href="{{ path('app_home_recipe', {'id': recipe.id}) }}">{{ recipe.name }}</a>
                     </li>
                 {% else %}
                     Aucune recette associé
