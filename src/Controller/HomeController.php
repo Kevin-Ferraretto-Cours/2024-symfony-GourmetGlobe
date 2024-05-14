@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class HomeController extends AbstractController
 {
@@ -46,5 +47,19 @@ class HomeController extends AbstractController
             'comments' => $recipe->getComment(),
             'form' => $form,
         ]);
+    }
+
+    #[Route('/favorite/{id}', name: 'app_home_recipe_favorite', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function favorite(Recipe $recipe, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->getUser()->getFavorite()->contains($recipe)) {
+            $this->getUser()->removeFavorite($recipe);
+        } else {
+            $this->getUser()->addFavorite($recipe);
+        }
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_home_recipe', ['id' => $recipe->getId()], Response::HTTP_SEE_OTHER);
     }
 }
