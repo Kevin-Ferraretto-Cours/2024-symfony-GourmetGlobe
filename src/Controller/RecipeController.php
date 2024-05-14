@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
-#[Route('/recipe')]
+#[Route('profile/recipe')]
 class RecipeController extends AbstractController
 {
     #[Route('/', name: 'app_recipe_index', methods: ['GET'])]
