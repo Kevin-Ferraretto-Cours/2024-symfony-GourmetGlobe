@@ -18,7 +18,7 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 #[IsGranted('ROLE_USER')]
 class RecipeController extends AbstractController
 {
-    #[Route('/', name: 'app_recipe_index', methods: ['GET'])]
+    #[Route('/profile/recipe', name: 'app_recipe_index', methods: ['GET'])]
     public function index(RecipeRepository $recipeRepository): Response
     {
         return $this->render('recipe/index.html.twig', [
@@ -26,7 +26,7 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_recipe_new', methods: ['GET', 'POST'])]
+    #[Route('/profile/recipe/new', name: 'app_recipe_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $recipe = new Recipe();
@@ -63,7 +63,7 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_recipe_show', methods: ['GET'])]
+    #[Route('/profile/recipe/{id}', name: 'app_recipe_show', methods: ['GET'])]
     public function show(Recipe $recipe): Response
     {
         return $this->render('recipe/show.html.twig', [
@@ -71,7 +71,7 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'])]
+    #[Route('/profile/recipe/{id}/edit', name: 'app_recipe_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Recipe $recipe, EntityManagerInterface $entityManager): Response
     {
         if ($recipe->getUser() !== $this->getUser()) {
@@ -92,7 +92,7 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_recipe_delete', methods: ['POST'])]
+    #[Route('/profile/recipe/{id}', name: 'app_recipe_delete', methods: ['POST'])]
     public function delete(Request $request, Recipe $recipe, EntityManagerInterface $entityManager): Response
     {
         if ($recipe->getUser() !== $this->getUser()) {
