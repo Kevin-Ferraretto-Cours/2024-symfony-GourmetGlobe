@@ -9,6 +9,7 @@ use App\Form\CommentType;
 use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -102,7 +103,7 @@ class HomeController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setUser($this->getUser());
-            $comment->setDate(new \DateTime());
+            $comment->setDate(new DateTime());
             $recipe->addComment($comment);
             $entityManager->persist($comment);
             $entityManager->persist($recipe);
