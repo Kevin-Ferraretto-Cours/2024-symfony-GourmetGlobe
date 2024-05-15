@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
+use App\Entity\Ingredient;
 use App\Entity\Recipe;
 use App\Form\CommentType;
 use App\Repository\IngredientRepository;
@@ -116,10 +117,18 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('app_home_recipe', ['id' => $recipe->getId()], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('home/show.html.twig', [
+        return $this->render('home/recipe.html.twig', [
             'recipe' => $recipe,
             'comments' => $recipe->getComment(),
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/ingredient/{id}', name: 'app_home_ingredient')]
+    public function ingredient(Ingredient $ingredient): Response
+    {
+        return $this->render('home/ingredient.html.twig', [
+            'ingredient' => $ingredient,
         ]);
     }
 

@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}GourmetGlobe - {{ ingredient.name }}{% endblock %}
+
+{% block body %}
+    {% include 'navbar.html.twig' %}
+
+    <div class="max-w-screen-xl flex justify-between items-center mx-auto p-4">
+        <div>
+            <h1 class="font-semibold text-2xl md:text-3xl text-gray-900 dark:text-white leading-tight">{{ ingredient.name }}</h1>
+            <p class="mb-4 text-xl leading-none text-gray-900 md:text-2xl dark:text-white">par {{ ingredient.user.email }}</p>
+        </div>
+    </div>
+
+    <section class="bg-white dark:bg-gray-900 flex">
+        <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
+            <h2 class="mb-2 text-xl font-semibold leading-none text-gray-900 md:text-2xl dark:text-white">Recette associés:</h2>
+            <ul>
+                {% for recipe in ingredient.recipes %}
+                    <li class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                        <!-- Modal toggle -->
+                        <a href="{{ path('app_home_recipe', {'id': recipe.id}) }}" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            {{ recipe.name }}
+                        </a>
+                    </li>
+                {% else %}
+                    Aucune recette associé
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+{% endblock %}
