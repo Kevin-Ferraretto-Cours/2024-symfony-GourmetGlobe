@@ -71,8 +71,8 @@
             <h2 class="mb-2 text-xl font-semibold leading-none text-gray-900 md:text-2xl dark:text-white">Recette associés:</h2>
             <ul>
                 {% for recipe in ingredient.recipes %}
-                    <li>
-                        <a href="{{ path('app_home_recipe', {'id': recipe.id}) }}">{{ recipe.name }}</a>
+                    <li class="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                        <a href="{{ path('app_home_recipe', {'id': recipe.id}) }}" class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">{{ recipe.name }}</a>
                     </li>
                 {% else %}
                     Aucune recette associé
