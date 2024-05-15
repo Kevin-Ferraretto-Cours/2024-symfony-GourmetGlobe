@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Recipe;
 use App\Form\CommentType;
+use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,32 +16,83 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'app_home')]
-    public function index(RecipeRepository $recipeRepository): Response
+    #[Route('/', name: 'app_home', methods: ['GET', 'POST'])]
+    public function index(Request $request, RecipeRepository $recipeRepository, IngredientRepository $ingredientRepository): Response
     {
         $user = $this->getUser();
         $allRecipes = $recipeRepository->findAll();
-        $sortedRecipes = [];
+        $selectedIngredientIds = [];
 
-        if ($user !== null){
-            $favoriteRecipes = $user->getFavorite();
-
-            foreach ($favoriteRecipes as $favoriteRecipe) {
-                if (in_array($favoriteRecipe, $allRecipes)) {
-                    $sortedRecipes[] = $favoriteRecipe;
-                }
+        // Récupérer les IDs des ingrédients sélectionnés
+        foreach ($ingredientRepository->findAll() as $ingredient) {
+            $inputName = 'filter-ingredient-' . $ingredient->getId();
+            if ($request->request->get($inputName)) {
+                $selectedIngredientIds[] = $ingredient->getId();
             }
         }
 
+        $favoriteRecipes = [];
+        $nonFavoriteRecipes = [];
+
+        // Séparer les recettes favorites des non favorites
         foreach ($allRecipes as $recipe) {
-            if (!in_array($recipe, $sortedRecipes)) {
-                $sortedRecipes[] = $recipe;
+            if ($user !== null && $user->getFavorite()->contains($recipe)) {
+                $favoriteRecipes[] = $recipe;
+            } else {
+                $nonFavoriteRecipes[] = $recipe;
             }
         }
 
+        // Si aucun ingrédient n'est sélectionné, afficher les recettes favorites en premier
+        if (empty($selectedIngredientIds)) {
+            return $this->render('home/index.html.twig', [
+                'recipes' => array_merge($favoriteRecipes, $nonFavoriteRecipes),
+                'ingredients' => $ingredientRepository->findAll(),
+                'selectedIngredientIds' => $selectedIngredientIds
+            ]);
+        }
+
+        // Filtrer et trier les recettes favorites en fonction des ingrédients sélectionnés
+        $filteredFavoriteRecipes = [];
+        foreach ($favoriteRecipes as $recipe) {
+            $recipeIngredients = $recipe->getIngredient()->toArray();
+            $recipeIngredientIds = array_map(function($ingredient) {
+                return $ingredient->getId();
+            }, $recipeIngredients);
+            if (empty(array_diff($selectedIngredientIds, $recipeIngredientIds))) {
+                $filteredFavoriteRecipes[] = $recipe;
+            }
+        }
+
+        // Filtrer et trier les recettes non favorites en fonction des ingrédients sélectionnés
+        $filteredNonFavoriteRecipes = [];
+        foreach ($nonFavoriteRecipes as $recipe) {
+            $recipeIngredients = $recipe->getIngredient()->toArray();
+            $recipeIngredientIds = array_map(function($ingredient) {
+                return $ingredient->getId();
+            }, $recipeIngredients);
+            $matchingIngredientCount = count(array_intersect($selectedIngredientIds, $recipeIngredientIds));
+            if ($matchingIngredientCount > 0) {
+                $filteredNonFavoriteRecipes[$recipe->getId()] = $matchingIngredientCount;
+            }
+        }
+
+        // Trier les recettes non favorites par le nombre d'ingrédients correspondant à la recherche
+        arsort($filteredNonFavoriteRecipes);
+
+        // Réorganiser les recettes non favorites par ordre de tri
+        $sortedNonFavoriteRecipes = [];
+        foreach ($filteredNonFavoriteRecipes as $recipeId => $matchingIngredientCount) {
+            $sortedNonFavoriteRecipes[] = $recipeRepository->find($recipeId);
+        }
+
+        // Fusionner les recettes favorites filtrées et les recettes non favorites triées
+        $filteredRecipes = array_merge($filteredFavoriteRecipes, $sortedNonFavoriteRecipes);
 
         return $this->render('home/index.html.twig', [
-            'recipes' => $sortedRecipes,
+            'recipes' => $filteredRecipes,
+            'ingredients' => $ingredientRepository->findAll(),
+            'selectedIngredientIds' => $selectedIngredientIds
         ]);
     }
 
