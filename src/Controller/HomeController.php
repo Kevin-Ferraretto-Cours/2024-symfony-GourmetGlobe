@@ -18,8 +18,29 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(RecipeRepository $recipeRepository): Response
     {
+        $user = $this->getUser();
+        $allRecipes = $recipeRepository->findAll();
+        $sortedRecipes = [];
+
+        if ($user !== null){
+            $favoriteRecipes = $user->getFavorite();
+
+            foreach ($favoriteRecipes as $favoriteRecipe) {
+                if (in_array($favoriteRecipe, $allRecipes)) {
+                    $sortedRecipes[] = $favoriteRecipe;
+                }
+            }
+        }
+
+        foreach ($allRecipes as $recipe) {
+            if (!in_array($recipe, $sortedRecipes)) {
+                $sortedRecipes[] = $recipe;
+            }
+        }
+
+
         return $this->render('home/index.html.twig', [
-            'recipes' => $recipeRepository->findAll(),
+            'recipes' => $sortedRecipes,
         ]);
     }
 
