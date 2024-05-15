@@ -8,7 +8,6 @@ use App\Entity\Recipe;
 use App\Form\CommentType;
 use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
-use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -144,9 +143,8 @@ class HomeController extends AbstractController
 
     #[Route('/profile/favorite', name: 'app_home_recipe_favorite_user', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function showFavorite(UserRepository $userRepository): Response
+    public function showFavorite(): Response
     {
-
         return $this->render('home/favorite.html.twig', [
             'recipes' => $this->getUser()->getFavorite(),
         ]);
