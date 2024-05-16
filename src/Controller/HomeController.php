@@ -103,9 +103,8 @@ class HomeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $comment->setUser($this->getUser());
             $comment->setDate(new DateTime());
-            $recipe->addComment($comment);
+            $comment->setRecipe($recipe);
             $entityManager->persist($comment);
-            $entityManager->persist($recipe);
             $entityManager->flush();
 
 
@@ -114,7 +113,7 @@ class HomeController extends AbstractController
 
         return $this->render('home/recipe.html.twig', [
             'recipe' => $recipe,
-            'comments' => $recipe->getComment(),
+            'comments' => $recipe->getComments(),
             'form' => $form,
         ]);
     }
