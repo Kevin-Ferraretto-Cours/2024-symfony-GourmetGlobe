@@ -6,6 +6,9 @@ use App\Entity\Recipe;
 use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
+use Imagine\Image\ImageInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,6 +46,11 @@ class RecipeController extends AbstractController
                     $this->getParameter('recipe_directory_assets'),
                     $newFilename
                 );
+                $cheminImage = $this->getParameter('recipe_directory_assets') . '/' . $newFilename;
+                $imagine = new Imagine();
+                $imageOriginal = $imagine->open($cheminImage);
+                $imageRedimensionne = $imageOriginal->resize(new Box(1024, 768), ImageInterface::FILTER_LANCZOS);
+                $imageRedimensionne->save($cheminImage);
                 $filesystem = new Filesystem();
                 $filesystem->copy(
                     $this->getParameter('recipe_directory_assets') . '/' . $newFilename,
