@@ -37,20 +37,20 @@ class Recipe
     #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'recipes')]
     private Collection $ingredient;
 
-    /**
-     * @var Collection<int, Comment>
-     */
-    #[ORM\ManyToMany(targetEntity: Comment::class)]
-    private Collection $comment;
-
     #[ORM\ManyToOne(inversedBy: 'recipes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    /**
+     * @var Collection<int, Comment>
+     */
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'recipe', orphanRemoval: true)]
+    private Collection $comments;
+
     public function __construct()
     {
         $this->ingredient = new ArrayCollection();
-        $this->comment = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -142,30 +142,6 @@ class Recipe
         return $this;
     }
 
-    /**
-     * @return Collection<int, Comment>
-     */
-    public function getComment(): Collection
-    {
-        return $this->comment;
-    }
-
-    public function addComment(Comment $comment): static
-    {
-        if (!$this->comment->contains($comment)) {
-            $this->comment->add($comment);
-        }
-
-        return $this;
-    }
-
-    public function removeComment(Comment $comment): static
-    {
-        $this->comment->removeElement($comment);
-
-        return $this;
-    }
-
     public function getUser(): ?User
     {
         return $this->user;
@@ -176,5 +152,13 @@ class Recipe
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
     }
 }
