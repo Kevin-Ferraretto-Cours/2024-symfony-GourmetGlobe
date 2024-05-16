@@ -17,15 +17,21 @@
                     </h1>
                     {{ form_errors(registrationForm) }}
                     {{ form_start(registrationForm) }}
-                        <div>
+                        <div class="py-2">
                             {{ form_row(registrationForm.email) }}
                         </div>
-                        <div>
+                        <div class="py-2">
+                            {{ form_row(registrationForm.pseudo) }}
+                        </div>
+                        <div class="py-2">
                             {{ form_row(registrationForm.plainPassword, {
                                 label: 'Password'
                             }) }}
                         </div>
-                        <div class="flex items-start">
+                        <div class="py-2">
+                            {{ form_row(registrationForm.picture) }}
+                        </div>
+                        <div class="flex items-start py-2">
                             <div class="flex items-center h-5">
                                 {{ form_widget(registrationForm.agreeTerms) }}
                             </div>
