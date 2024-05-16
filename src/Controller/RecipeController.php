@@ -89,6 +89,28 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $image = $form->get('picture')->getData();
+            if ($image) {
+                $slugger = new AsciiSlugger();
+                $slug = $slugger->slug($form->get('name')->getData());
+                $newFilename = date('d-m-Y--h-i-s') . '.' . $slug . '.' . $image->guessExtension();
+                $image->move(
+                    $this->getParameter('recipe_directory_assets'),
+                    $newFilename
+                );
+                $cheminImage = $this->getParameter('recipe_directory_assets') . '/' . $newFilename;
+                $imagine = new Imagine();
+                $imageOriginal = $imagine->open($cheminImage);
+                $imageRedimensionne = $imageOriginal->resize(new Box(1024, 768), ImageInterface::FILTER_LANCZOS);
+                $imageRedimensionne->save($cheminImage);
+                $filesystem = new Filesystem();
+                $filesystem->copy(
+                    $this->getParameter('recipe_directory_assets') . '/' . $newFilename,
+                    $this->getParameter('recipe_directory_public') . '/' . $newFilename
+                );
+                $recipe->setPicture('build/img/recipe/' . $newFilename);
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_recipe_index', [], Response::HTTP_SEE_OTHER);
