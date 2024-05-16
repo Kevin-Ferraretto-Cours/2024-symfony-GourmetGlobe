@@ -7,11 +7,11 @@ use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -30,6 +30,21 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+
+            $image = $form->get('picture')->getData();
+            if ($image) {
+                $newFilename = $form->get('pseudo')->getData() . '.' . $image->guessExtension();
+                $image->move(
+                    $this->getParameter('user_directory_assets'),
+                    $newFilename
+                );
+                $filesystem = new Filesystem();
+                $filesystem->copy(
+                    $this->getParameter('user_directory_assets') . '/' . $newFilename,
+                    $this->getParameter('user_directory_public') . '/' . $newFilename
+                );
+                $user->setPicture('build/img/user/' . $newFilename);
+            }
 
             $entityManager->persist($user);
             $entityManager->flush();
