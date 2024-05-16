@@ -6,6 +6,8 @@
 parameters:
     recipe_directory_public: '%kernel.project_dir%/public/build/img/recipe'
     recipe_directory_assets: '%kernel.project_dir%/assets/img/recipe'
+    user_directory_public: '%kernel.project_dir%/public/build/img/user'
+    user_directory_assets: '%kernel.project_dir%/assets/img/user'
 
 services:
     # default configuration for services in *this* file
